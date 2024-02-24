@@ -7,7 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.configurations.database import get_async_session
 from src.models.books import Book
+from src.models.sellers import Seller
 from src.schemas import IncomingBook, ReturnedAllBooks, ReturnedBook
+from src.schemas.books import UpdatedBook
 
 books_router = APIRouter(tags=["books"], prefix="/books")
 
@@ -21,11 +23,17 @@ async def create_book(
     book: IncomingBook, session: DBSession
 ):  # прописываем модель валидирующую входные данные и сессию как зависимость.
     # это - бизнес логика. Обрабатываем данные, сохраняем, преобразуем и т.д.
+
+    seller = await session.get(Seller, book.seller_id)
+    if not seller:
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
+
     new_book = Book(
         title=book.title,
         author=book.author,
         year=book.year,
         count_pages=book.count_pages,
+        seller_id=book.seller_id
     )
     session.add(new_book)
     await session.flush()
@@ -64,7 +72,7 @@ async def delete_book(book_id: int, session: DBSession):
 
 # Ручка для обновления данных о книге
 @books_router.put("/{book_id}")
-async def update_book(book_id: int, new_data: ReturnedBook, session: DBSession):
+async def update_book(book_id: int, new_data: UpdatedBook, session: DBSession):
     # Оператор "морж", позволяющий одновременно и присвоить значение и проверить его.
     if updated_book := await session.get(Book, book_id):
         updated_book.author = new_data.author

@@ -134,6 +134,37 @@ async def test_delete_seller(db_session, async_client):
 
 
 @pytest.mark.asyncio
+async def test_delete_seller_with_books(db_session, async_client):
+    seller = sellers.Seller(first_name="Vasya", last_name="Petrov", email="qwe@qwe.rty", password="qwerty")
+
+    db_session.add(seller)
+    await db_session.flush()
+
+    book_1 = books.Book(author="Pushkin", title="Eugeny Onegin", year=2001, count_pages=104, seller_id=seller.id)
+    book_2 = books.Book(author="Lermontov", title="Mziri", year=1997, count_pages=104, seller_id=seller.id)
+
+    db_session.add_all([book_1, book_2])
+    await db_session.flush()
+
+    response = await async_client.delete(f"/api/v1/seller/{seller.id}")
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    await db_session.flush()
+
+    all_sellers = await db_session.execute(select(sellers.Seller))
+    res = all_sellers.scalars().all()
+    assert len(res) == 0
+
+    res = await db_session.execute(select(books.Book).where(books.Book.id == book_1.id))
+    book = res.scalars().first()
+    assert book is None
+
+    res = await db_session.execute(select(books.Book).where(books.Book.id == book_2.id))
+    book = res.scalars().first()
+    assert book is None
+
+
+@pytest.mark.asyncio
 async def test_update_seller(db_session, async_client):
     seller = sellers.Seller(first_name="Vasya", last_name="Petrov", email="qwe@qwe.rty", password="qwerty")
 

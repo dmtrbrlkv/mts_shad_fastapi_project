@@ -4,7 +4,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 from .books import ReturnedBookForSeller
 
-__all__ = ["IncomingSeller", "ReturnedSeller", "ReturnedAllSellers"]
+__all__ = ["IncomingSeller", "ReturnedSeller", "ReturnedAllSellers", "BaseSeller", "ReturnedSellerWithBooks"]
 
 
 class BaseSeller(BaseModel):

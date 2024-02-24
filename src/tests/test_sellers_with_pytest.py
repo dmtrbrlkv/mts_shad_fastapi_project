@@ -1,5 +1,4 @@
 import pytest
-import pytest_asyncio
 from fastapi import status
 from sqlalchemy import select
 

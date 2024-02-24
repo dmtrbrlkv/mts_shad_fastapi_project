@@ -15,12 +15,7 @@ result = {
 
 @pytest_asyncio.fixture()
 async def seller_id(db_session):
-    seller = sellers.Seller(
-        first_name="Seller",
-        last_name="Seller",
-        email="seller@seller.seller",
-        password="seller"
-    )
+    seller = sellers.Seller(first_name="Seller", last_name="Seller", email="seller@seller.seller", password="seller")
     db_session.add(seller)
     await db_session.flush()
     yield seller.id
@@ -42,7 +37,7 @@ async def test_create_book(async_client, seller_id):
         "author": "Robert Martin",
         "count_pages": 104,
         "year": 2007,
-        "seller_id": seller_id
+        "seller_id": seller_id,
     }
 
 
@@ -66,8 +61,22 @@ async def test_get_books(db_session, async_client, seller_id):
     # Проверяем интерфейс ответа, на который у нас есть контракт.
     assert response.json() == {
         "books": [
-            {"title": "Eugeny Onegin", "author": "Pushkin", "year": 2001, "id": book.id, "count_pages": 104, "seller_id": seller_id},
-            {"title": "Mziri", "author": "Lermontov", "year": 1997, "id": book_2.id, "count_pages": 104, "seller_id": seller_id},
+            {
+                "title": "Eugeny Onegin",
+                "author": "Pushkin",
+                "year": 2001,
+                "id": book.id,
+                "count_pages": 104,
+                "seller_id": seller_id,
+            },
+            {
+                "title": "Mziri",
+                "author": "Lermontov",
+                "year": 1997,
+                "id": book_2.id,
+                "count_pages": 104,
+                "seller_id": seller_id,
+            },
         ]
     }
 
@@ -94,7 +103,7 @@ async def test_get_single_book(db_session, async_client, seller_id):
         "year": 2001,
         "count_pages": 104,
         "id": book.id,
-        "seller_id": seller_id
+        "seller_id": seller_id,
     }
 
 

@@ -1,6 +1,7 @@
 from typing import List
 
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, EmailStr, Field
+
 from .books import ReturnedBookForSeller
 
 __all__ = ["IncomingSeller", "ReturnedSeller", "ReturnedAllSellers"]

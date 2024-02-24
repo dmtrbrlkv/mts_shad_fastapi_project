@@ -29,11 +29,7 @@ async def create_book(
         return Response(status_code=status.HTTP_404_NOT_FOUND)
 
     new_book = Book(
-        title=book.title,
-        author=book.author,
-        year=book.year,
-        count_pages=book.count_pages,
-        seller_id=book.seller_id
+        title=book.title, author=book.author, year=book.year, count_pages=book.count_pages, seller_id=book.seller_id
     )
     session.add(new_book)
     await session.flush()

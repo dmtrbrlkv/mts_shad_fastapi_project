@@ -15,4 +15,4 @@ class Seller(BaseModel):
     # e_mail: Mapped[str] = mapped_column("e-mail", String(50), nullable=False)
     email: Mapped[str] = mapped_column(String(50), nullable=False)
     password: Mapped[str] = mapped_column(String(50), nullable=False)
-    books: Mapped[List["Book"]] = relationship(cascade="all, delete-orphan")
+    books: Mapped[List["Book"]] = relationship(cascade="all, delete-orphan")  # noqa F821

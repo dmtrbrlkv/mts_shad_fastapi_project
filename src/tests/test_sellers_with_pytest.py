@@ -8,12 +8,7 @@ from src.models import books, sellers
 
 @pytest.mark.asyncio
 async def test_create_seller(async_client):
-    data = {
-        "first_name": "Vasya",
-        "last_name": "Petrov",
-        "email": "qwe@qwe.rty",
-        "password": "qwerty"
-    }
+    data = {"first_name": "Vasya", "last_name": "Petrov", "email": "qwe@qwe.rty", "password": "qwerty"}
     response = await async_client.post("/api/v1/seller/", json=data)
 
     assert response.status_code == status.HTTP_201_CREATED
@@ -28,21 +23,10 @@ async def test_create_seller(async_client):
     }
 
 
-
 @pytest.mark.asyncio
 async def test_get_sellers(db_session, async_client):
-    seller_1 = sellers.Seller(
-        first_name="Vasya",
-        last_name="Petrov",
-        email="qwe@qwe.rty",
-        password="qwerty"
-    )
-    seller_2 = sellers.Seller(
-        first_name="Petya",
-        last_name="Vasiliev",
-        email="asd@asd.zxc",
-        password="qazwsx"
-    )
+    seller_1 = sellers.Seller(first_name="Vasya", last_name="Petrov", email="qwe@qwe.rty", password="qwerty")
+    seller_2 = sellers.Seller(first_name="Petya", last_name="Vasiliev", email="asd@asd.zxc", password="qazwsx")
 
     db_session.add_all([seller_1, seller_2])
     await db_session.flush()
@@ -59,13 +43,13 @@ async def test_get_sellers(db_session, async_client):
                 "first_name": seller_1.first_name,
                 "last_name": seller_1.last_name,
                 "email": seller_1.email,
-                "id": seller_1.id
+                "id": seller_1.id,
             },
             {
                 "first_name": seller_2.first_name,
                 "last_name": seller_2.last_name,
                 "email": seller_2.email,
-                "id": seller_2.id
+                "id": seller_2.id,
             },
         ]
     }
@@ -73,12 +57,7 @@ async def test_get_sellers(db_session, async_client):
 
 @pytest.mark.asyncio
 async def test_get_single_seller_without_books(db_session, async_client):
-    seller = sellers.Seller(
-        first_name="Vasya",
-        last_name="Petrov",
-        email="qwe@qwe.rty",
-        password="qwerty"
-    )
+    seller = sellers.Seller(first_name="Vasya", last_name="Petrov", email="qwe@qwe.rty", password="qwerty")
     db_session.add(seller)
     await db_session.flush()
 
@@ -92,18 +71,13 @@ async def test_get_single_seller_without_books(db_session, async_client):
         "last_name": "Petrov",
         "email": "qwe@qwe.rty",
         "id": seller.id,
-        "books": []
+        "books": [],
     }
 
 
 @pytest.mark.asyncio
 async def test_get_single_seller_with_books(db_session, async_client):
-    seller = sellers.Seller(
-        first_name="Vasya",
-        last_name="Petrov",
-        email="qwe@qwe.rty",
-        password="qwerty"
-    )
+    seller = sellers.Seller(first_name="Vasya", last_name="Petrov", email="qwe@qwe.rty", password="qwerty")
     db_session.add(seller)
     await db_session.flush()
 
@@ -129,27 +103,22 @@ async def test_get_single_seller_with_books(db_session, async_client):
                 "author": book_1.author,
                 "year": book_1.year,
                 "id": book_1.id,
-                "count_pages": book_1.count_pages
+                "count_pages": book_1.count_pages,
             },
             {
                 "title": book_2.title,
                 "author": book_2.author,
                 "year": book_2.year,
                 "id": book_2.id,
-                "count_pages": book_2.count_pages
+                "count_pages": book_2.count_pages,
             },
-        ]
+        ],
     }
 
 
 @pytest.mark.asyncio
 async def test_delete_seller(db_session, async_client):
-    seller = sellers.Seller(
-        first_name="Vasya",
-        last_name="Petrov",
-        email="qwe@qwe.rty",
-        password="qwerty"
-    )
+    seller = sellers.Seller(first_name="Vasya", last_name="Petrov", email="qwe@qwe.rty", password="qwerty")
 
     db_session.add(seller)
     await db_session.flush()
@@ -166,19 +135,13 @@ async def test_delete_seller(db_session, async_client):
 
 @pytest.mark.asyncio
 async def test_update_seller(db_session, async_client):
-    seller = sellers.Seller(
-        first_name="Vasya",
-        last_name="Petrov",
-        email="qwe@qwe.rty",
-        password="qwerty"
-    )
+    seller = sellers.Seller(first_name="Vasya", last_name="Petrov", email="qwe@qwe.rty", password="qwerty")
 
     db_session.add(seller)
     await db_session.flush()
 
     response = await async_client.put(
-        f"/api/v1/seller/{seller.id}",
-        json={"first_name": "Petya", "last_name": "Vasiliev", "email": "asd@asd.zxc"}
+        f"/api/v1/seller/{seller.id}", json={"first_name": "Petya", "last_name": "Vasiliev", "email": "asd@asd.zxc"}
     )
 
     assert response.status_code == status.HTTP_200_OK

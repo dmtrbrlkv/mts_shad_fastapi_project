@@ -1,15 +1,13 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
-from fastapi import Response
-from icecream import ic
+from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from src.configurations.database import get_async_session
 from src.models.sellers import Seller
-from src.schemas import IncomingSeller, ReturnedSeller, ReturnedAllSellers
+from src.schemas import IncomingSeller, ReturnedAllSellers, ReturnedSeller
 from src.schemas.sellers import BaseSeller, ReturnedSellerWithBooks
 
 sellers_router = APIRouter(tags=["sellers"], prefix="/seller")
@@ -19,11 +17,10 @@ DBSession = Annotated[AsyncSession, Depends(get_async_session)]
 
 
 # Ручка для создания записи о книге в БД. Возвращает созданную книгу.
-@sellers_router.post("/", response_model=ReturnedSeller,
-                     status_code=status.HTTP_201_CREATED)  # Прописываем модель ответа
-async def create_seller(
-        seller: IncomingSeller, session: DBSession
-):
+@sellers_router.post(
+    "/", response_model=ReturnedSeller, status_code=status.HTTP_201_CREATED
+)  # Прописываем модель ответа
+async def create_seller(seller: IncomingSeller, session: DBSession):
     new_seller = Seller(
         first_name=seller.first_name,
         last_name=seller.last_name,
@@ -54,12 +51,11 @@ async def get_seller(seller_id: int, session: DBSession):
     #     return seller
     # return Response(status_code=status.HTTP_404_NOT_FOUND)
 
-    res = await session.execute(
-        select(Seller).where(Seller.id == seller_id).options(selectinload(Seller.books))
-    )
+    res = await session.execute(select(Seller).where(Seller.id == seller_id).options(selectinload(Seller.books)))
     if seller := res.scalars().first():
         return seller
     return Response(status_code=status.HTTP_404_NOT_FOUND)
+
 
 @sellers_router.delete("/{seller_id}")
 async def delete_seller(seller_id: int, session: DBSession):
